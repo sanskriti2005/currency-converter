@@ -1,5 +1,9 @@
 import argparse
 from configparser import ConfigParser
+from urllib import request
+import json
+
+BASE_API_URL = "https://api.freecurrencyapi.com/v1/latest:"
 
 # FETCHES API KEY
 def _get_api_key():
@@ -10,10 +14,13 @@ def _get_api_key():
 # 
 def read_user_cli_args():
     parser = argparse.ArgumentParser(
-        description = "gets currency and the target currency for conversion"
+        description = "gets base_currency, the amount and returns the amount in the target currency"
     )
     parser.add_argument(
-        "currency", type = str, help="enter a currency."
+        "base_currency", type = str, help="enter a currency."
+    )
+    parser.add_argument(
+        "amount", type = int, help="enter an amount."
     )
     parser.add_argument(
         "target_currency", type=str, help="enter a target currency"
@@ -27,7 +34,21 @@ def read_user_cli_args():
     )
     return parser.parse_args()
 
+def build_conversion_query(base_currency, target_currency):
+    api_key = _get_api_key
+    base_currency_name = base_currency.upper() 
+    target_currency_name = target_currency.upper()
+    url = f"{BASE_API_URL}?apikey={api_key}&currencies={base_currency_name}%2C{target_currency_name}"
+    return url
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     user_args = read_user_cli_args()
-    print(user_args.currency, user_args.target_currency, user_args.currency_rate)
+    query_url = build_conversion_query(user_args.base_currency, user_args.target_currency)
+    print(query_url)
