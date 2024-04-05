@@ -11,7 +11,7 @@ def _get_api_key():
     config.read("secrets.ini")
     return config["freecurrencyapi"]["api_key"]
 
-# 
+# PARSES USER ARGUMENTS 
 def read_user_cli_args():
     parser = argparse.ArgumentParser(
         description = "gets base_currency, the amount and returns the amount in the target currency"
@@ -34,6 +34,7 @@ def read_user_cli_args():
     )
     return parser.parse_args()
 
+#BUILD THE URL TO FETCH THE DATA FROM THE API
 def build_conversion_query(base_currency, target_currency):
     api_key = _get_api_key
     base_currency_name = base_currency.upper() 
