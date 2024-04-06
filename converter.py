@@ -5,6 +5,7 @@ import json
 
 BASE_API_URL = "https://api.exconvert.com/convert"
 
+
 # FETCHES API KEY
 def _get_api_key():
     config = ConfigParser()
@@ -72,8 +73,11 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
 #GET DATA FROM THE URL
 def get_conversion_data(query_url):
 
+        #create a request object and include a user-agent
+        req = request.Request(query_url, headers={'User-Agent': 'Mozilla/5.0'})
+
         #initiating the http request from the built url
-        response = request.urlopen(query_url)
+        response = request.urlopen(req)
 
         #the data from the response is read
         data = response.read()
