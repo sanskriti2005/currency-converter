@@ -81,7 +81,7 @@ def get_conversion_data(query_url):
         #returns deserialised json into a python dictionary
         return json.loads(data)
 
-
+#just checking some things
 
 
 
