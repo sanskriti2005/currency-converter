@@ -1,7 +1,9 @@
 import argparse
 from configparser import ConfigParser
-from urllib import parse, request
+from urllib import parse, request, error
 import json
+import sys
+from pprint import pp 
 
 BASE_API_URL = "https://api.exconvert.com/convert"
 
@@ -66,6 +68,8 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
     url = (
         f"{BASE_API_URL}?from={base_currency_name}&to={target_currency_name}&amount={amount}&access_key={api_key}"
     )
+
+
     return url
 
 
@@ -73,19 +77,36 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
 #GET DATA FROM THE URL
 def get_conversion_data(query_url):
 
-        #create a request object and include a user-agent
+        #create a request object for the built url and include a user-agent
         req = request.Request(query_url, headers={'User-Agent': 'Mozilla/5.0'})
 
-        #initiating the http request from the built url
-        response = request.urlopen(req)
+        try:
+            #initiating the http request from the request object
+            response = request.urlopen(req)
+
+        #incase of an error    
+        except error.HTTPError as http_error:
+              #401 Unauthorized
+            if http_error.code == 401:
+                  sys.exit("Access Denied, Check your API key.")
+             #401 Not-Found
+            elif http_error.code == 404:
+                  sys.exit("Can't find the data for the mentioned currency, our apologies.")
+            else: 
+                 sys.exit(f"Something went wrong... ({http_error.code})")
+               
+               
 
         #the data from the response is read
         data = response.read()
 
         #returns deserialised json into a python dictionary
-        return json.loads(data)
-
-#just checking some things
+        try:
+            return json.loads(data)
+        
+        #unless.. there is an error (the horrors)
+        except:
+             sys.exit("Couldn't read the server response")
 
 
 
