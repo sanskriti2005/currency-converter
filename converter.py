@@ -109,6 +109,26 @@ def get_conversion_data(query_url):
              sys.exit("Couldn't read the server response")
 
 
+#DISPLAY INFOMRATION
+def display_information(conversion_data, currency_rate=False):
+    #base currency
+    print(f"Base: {conversion_data['base']}")
+
+    #target currency
+    target_currency = list(conversion_data['result'].keys())[0]
+    print(f"Target Currency: {target_currency}")
+
+    #amount entered by the user
+    print(f"Amount in base currency: {conversion_data['amount']}")
+
+    #amount in target currency
+    print(f"Converted Amount in Target Currency: {conversion_data['result'][target_currency]}")
+    
+    #if the user asks for the currency rate
+    if currency_rate:
+        print(f"Conversion Rate: {conversion_data['result']['rate']}")
+
+     
 
 
 
@@ -116,4 +136,4 @@ if __name__ == "__main__":
     user_args = read_user_cli_args()
     query_url = build_conversion_query(user_args.base_currency, user_args.target_currency, user_args.amount, user_args.currency_rate)
     conversion_data = get_conversion_data(query_url)
-    print(conversion_data)
+    display_information(conversion_data, user_args.currency_rate)
