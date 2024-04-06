@@ -50,7 +50,7 @@ def read_user_cli_args():
 #BUILD THE URL TO FETCH THE DATA 
 def build_conversion_query(base_currency, target_currency, amount, currency_rate = False):
     #api_key
-    api_key = _get_api_key
+    api_key = _get_api_key()
 
     #converting base_currency to url format
     base_currency_name = base_currency.upper()
@@ -62,9 +62,24 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
 
 
     #the url
-    url = f"{BASE_API_URL}?access_key={api_key}&from={base_currency_name}&to{target_currency_name}&{amount}"
+    url = (
+        f"{BASE_API_URL}?from={base_currency_name}&to={target_currency_name}&amount={amount}&access_key={api_key}"
+    )
     return url
 
+
+
+#GET DATA FROM THE URL
+def get_conversion_data(query_url):
+
+        #initiating the http request from the built url
+        response = request.urlopen(query_url)
+
+        #the data from the response is read
+        data = response.read()
+
+        #returns deserialised json into a python dictionary
+        return json.loads(data)
 
 
 
@@ -75,4 +90,5 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
 if __name__ == "__main__":
     user_args = read_user_cli_args()
     query_url = build_conversion_query(user_args.base_currency, user_args.target_currency, user_args.amount, user_args.currency_rate)
-    print(query_url)
+    conversion_data = get_conversion_data(query_url)
+    print(conversion_data)
