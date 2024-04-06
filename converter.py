@@ -1,18 +1,19 @@
 import argparse
+import os
 from configparser import ConfigParser
 from urllib import parse, request, error
 import json
 import sys
 from pprint import pp 
 
+
 BASE_API_URL = "https://api.exconvert.com/convert"
 
 
 # FETCHES API KEY
+
 def _get_api_key():
-    config = ConfigParser()
-    config.read("secrets.ini")
-    return config["exconvert"]["api_key"]
+     return os.getenv("EXCONVERT_API_KEY")
 
 # PARSES USER ARGUMENTS 
 def read_user_cli_args():
@@ -66,8 +67,7 @@ def build_conversion_query(base_currency, target_currency, amount, currency_rate
 
     #the url
     url = (
-        f"{BASE_API_URL}?from={base_currency_name}&to={target_currency_name}&amount={amount}&access_key={api_key}"
-    )
+        f"{BASE_API_URL}?from={base_currency_name}&to={target_currency_name}&amount={amount}&access_key={api_key}")
 
 
     return url
@@ -137,3 +137,4 @@ if __name__ == "__main__":
     query_url = build_conversion_query(user_args.base_currency, user_args.target_currency, user_args.amount, user_args.currency_rate)
     conversion_data = get_conversion_data(query_url)
     display_information(conversion_data, user_args.currency_rate)
+    
